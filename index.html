@@ -488,7 +488,15 @@ posts.forEach((post) => {
 
         const img = document.createElement("img");
 
-        img.src = `IMG_${number}.jpeg`;
+        if (
+    number === 7489 ||
+    number === 7490 ||
+    number === 7491
+) {
+    img.src = `IMG_${number}.png`;
+} else {
+    img.src = `IMG_${number}.jpeg`;
+}
 
         img.alt = `IMG_${number}`;
 
