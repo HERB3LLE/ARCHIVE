@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Belle Archive</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #111;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+}
+
+body {
+    width: 100%;
+}
+
+#archive {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   뒤로가기
+========================= */
+
+.back-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    width: 100%;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 24px;
+
+    background: rgba(255,255,255,0.95);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 32px;
+
+    color: #111;
+    text-decoration: none;
+
+    font-size: 27px;
+    font-weight: 300;
+
+    line-height: 1;
+}
+
+.back-button:active {
+    opacity: 0.45;
+}
+
+
+/* =========================
+   정렬
+========================= */
+
+.sort-bar {
+    width: 100%;
+
+    padding: 11px 24px;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 5px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.sort-bar button {
+    border: 0;
+    background: none;
+
+    padding: 4px 2px;
+
+    font-size: 12px;
+
+    color: #999;
+
+    cursor: pointer;
+}
+
+.sort-bar button.active {
+    color: #111;
+    font-weight: 600;
+}
+
+
+/* =========================
+   포스트
+========================= */
+
+.post {
+    width: 100%;
+
+    padding: 25px 24px 35px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+/* =========================
+   프로필
+========================= */
+
+.post-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 17px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+.profile-img {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    display: block;
+
+    background: #eee;
+}
+
+.profile-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.fairy {
+    font-size: 19px;
+    line-height: 1;
+}
+
+
+/* =========================
+   사진
+========================= */
+
+.gallery {
+    width: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+
+    background: #000;
+
+    border-radius: 20px;
+}
+
+.gallery.multi {
+    display: flex;
+
+    overflow-x: auto;
+
+    scroll-snap-type: x mandatory;
+
+    scrollbar-width: none;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.gallery.multi::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery img {
+    width: 100%;
+    height: 100%;
+
+    flex: 0 0 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    scroll-snap-align: start;
+}
+
+
+/* =========================
+   동그라미
+========================= */
+
+.dots {
+    width: 100%;
+    height: 34px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #b5b5b5;
+}
+
+.dot.active {
+    background: #111;
+}
+
+
+/* =========================
+   코멘트
+========================= */
+
+.caption {
+    margin: 7px 2px 0;
+
+    padding: 0;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    font-weight: 400;
+
+    white-space: pre-wrap;
+
+    word-break: keep-all;
+}
+
+
+/* =========================
+   모바일
+========================= */
+
+@media (max-width: 600px) {
+
+    .post {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .profile-img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .profile-name {
+        font-size: 14px;
+    }
+
+    .fairy {
+        font-size: 19px;
+    }
+
+    .caption {
+        font-size: 14px;
+    }
+}
+
+
+/* =========================
+   PC
+========================= */
+
+@media (min-width: 601px) {
+
+    body {
+        background: #f3f3f3;
+    }
+
+    #archive {
+        background: #fff;
+        min-height: 100vh;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<main id="archive">
+
+
+    <!-- =========================
+         홈페이지로 돌아가기
+    ========================= -->
+
+    <div class="back-bar">
+
+        <a
+            class="back-button"
+            href="https://homepage-eta-indol-19.vercel.app/"
+            aria-label="홈페이지로 돌아가기"
+        >
+            &lt;
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         정렬
+    ========================= -->
+
+    <div class="sort-bar">
+
+        <button
+            id="oldestBtn"
+            onclick="changeOrder('oldest')"
+        >
+            과거순
+        </button>
+
+        <span>·</span>
+
+        <button
+            id="newestBtn"
+            class="active"
+            onclick="changeOrder('newest')"
+        >
+            최신순
+        </button>
+
+    </div>
+
+
+    <div id="posts"></div>
+
+</main>
+
+
+<script>
+
+/* =====================================================
+   벨 프로필
+===================================================== */
+
+const profileImage =
+"Untitled45_20260901012016.png";
+
+
+/* =====================================================
+   포스트
+   과거 → 최신 순서
+===================================================== */
+
+const posts = [
+
+    [1, "키씨들 안녕🤍"],
+
+    [2, "키씨~ 오늘도 잘 지내고 있죠?🥰"],
+
+    [3, "우리 키씨 보고싶다아🤍"],
+
+    [2, "오늘도 행복한 하루 보내기🧚"],
+
+    [4, "비하인드 사진 풀어요🤍"],
+
+    [1, "키씨들 밥 잘 챙겨먹기!!"],
+
+    [3, "오늘 추천곡은 이거야🎧"],
+
+    [2, "키씨 모해요~?🤍"],
+
+    [5, "미공개 사진들📸"],
+
+    [2, "오늘도 키씨 생각하면서 화이팅!!"],
+
+    [1, "보고싶어어🥺"],
+
+    [3, "셀카 연습중🤍"],
+
+    [2, "오늘 하루도 고생 많았어요🫶"],
+
+    [4, "일본에서 찍었던 사진들🤍"],
+
+    [2, "키씨 사랑해💋"],
+
+    [3, "미공개 사진 공개!!"],
+
+    [2, "오늘은 뭐하고 있어요?"],
+
+    [5, "콘서트 비하인드🤍"],
+
+    [3, "키씨들 보고싶은 밤🌙"],
+
+    [2, "좋은 하루 보내기!!"],
+
+    [1, "키씨~🩷"],
+
+    [4, "귀여운 사진들 모음🧚"],
+
+    [2, "오늘도 잘 자요🤍"],
+
+    [3, "키씨가 좋아할 것 같은 사진들"],
+
+    [2, "우리 또 만나요🥰"],
+
+    [3, "미공개 셀카✨"],
+
+    [1, "키씨 보고싶어!!"],
+
+    [2, "오늘도 사랑해🤍"],
+
+    [4, "최근 사진들📸"],
+
+    [2, "키씨~ 뭐해??"],
+
+    [3, "행복한 하루 보내자🤍"],
+
+    [2, "오늘도 화이팅!!"],
+
+    [3, "보고싶다아🥺"],
+
+    [2, "잘 지내고 있죠?🤍"],
+
+    [5, "최근 비하인드 사진들"],
+
+    [2, "키씨들 사랑해🩷"],
+
+    [3, "오늘의 사진 선물🎁"],
+
+    [2, "굿나잇 키씨🌙"],
+
+    [4, "미공개 사진 풀고 갑니다🤍"],
+
+    [2, "오늘도 좋은 하루 보내요"],
+
+    [3, "키씨 생각중🫶"],
+
+    [2, "보고싶어!!"],
+
+    [4, "최근 셀카들🤍"],
+
+    [2, "키씨 모해~?"],
+
+    [3, "오늘도 행복하기!!"],
+
+    [2, "사랑해 키씨💋"],
+
+    [5, "마지막으로 사진 선물🤍"]
+
+];
+
+
+/* =====================================================
+   사진 번호
+===================================================== */
+
+const imageNumbers = [];
+
+for (
+    let i = 7431;
+    i <= 7573;
+    i++
+) {
+
+    if (
+        i === 7469 ||
+        i === 7470
+    ) {
+        continue;
+    }
+
+    imageNumbers.push(i);
+}
+
+
+/* =====================================================
+   사진 배정
+===================================================== */
+
+const postData = [];
+
+let imageIndex = 0;
+
+
+posts.forEach(
+    post => {
+
+        const images = [];
+
+        const count =
+            post[0];
+
+
+        for (
+            let i = 0;
+            i < count;
+            i++
+        ) {
+
+            const number =
+                imageNumbers[imageIndex];
+
+
+            if (
+                number === undefined
+            ) {
+                break;
+            }
+
+
+            images.push(number);
+
+            imageIndex++;
+        }
+
+
+        postData.push({
+            post: post,
+            images: images
+        });
+
+    }
+);
+
+
+/* =====================================================
+   포스트 생성
+===================================================== */
+
+function createPost(item) {
+
+    const post =
+        item.post;
+
+    const images =
+        item.images;
+
+
+    const article =
+        document.createElement("article");
+
+    article.className =
+        "post";
+
+
+    /* =========================
+       프로필
+    ========================= */
+
+    const header =
+        document.createElement("div");
+
+    header.className =
+        "post-header";
+
+
+    const profile =
+        document.createElement("div");
+
+    profile.className =
+        "profile";
+
+
+    const profileImg =
+        document.createElement("img");
+
+    profileImg.className =
+        "profile-img";
+
+    profileImg.src =
+        profileImage;
+
+    profileImg.alt =
+        "벨";
+
+
+    const name =
+        document.createElement("span");
+
+    name.className =
+        "profile-name";
+
+    name.textContent =
+        "벨";
+
+
+    const fairy =
+        document.createElement("span");
+
+    fairy.className =
+        "fairy";
+
+    fairy.textContent =
+        "🧚";
+
+
+    profile.appendChild(
+        profileImg
+    );
+
+    profile.appendChild(
+        name
+    );
+
+    profile.appendChild(
+        fairy
+    );
+
+
+    header.appendChild(
+        profile
+    );
+
+    article.appendChild(
+        header
+    );
+
+
+    /* =========================
+       사진
+    ========================= */
+
+    const gallery =
+        document.createElement("div");
+
+
+    gallery.className =
+        images.length > 1
+        ? "gallery multi"
+        : "gallery";
+
+
+    images.forEach(
+        number => {
+
+            const img =
+                document.createElement("img");
+
+
+            if (
+                number === 7489 ||
+                number === 7490 ||
+                number === 7491
+            ) {
+
+                img.src =
+                    `IMG_${number}.png`;
+
+            } else {
+
+                img.src =
+                    `IMG_${number}.jpeg`;
+
+            }
+
+
+            img.alt =
+                `IMG_${number}`;
+
+
+            img.loading =
+                "lazy";
+
+
+            gallery.appendChild(
+                img
+            );
+
+        }
+    );
+
+
+    article.appendChild(
+        gallery
+    );
+
+
+    /* =========================
+       동그라미
+    ========================= */
+
+    if (
+        images.length > 1
+    ) {
+
+        const dots =
+            document.createElement("div");
+
+        dots.className =
+            "dots";
+
+
+        images.forEach(
+            (number, index) => {
+
+                const dot =
+                    document.createElement("span");
+
+
+                dot.className =
+                    index === 0
+                    ? "dot active"
+                    : "dot";
+
+
+                dots.appendChild(
+                    dot
+                );
+
+            }
+        );
+
+
+        article.appendChild(
+            dots
+        );
+
+
+        gallery.addEventListener(
+            "scroll",
+            () => {
+
+                const width =
+                    gallery.clientWidth;
+
+
+                if (!width) {
+                    return;
+                }
+
+
+                const currentIndex =
+                    Math.round(
+                        gallery.scrollLeft /
+                        width
+                    );
+
+
+                const allDots =
+                    dots.querySelectorAll(
+                        ".dot"
+                    );
+
+
+                allDots.forEach(
+                    (dot, index) => {
+
+                        dot.classList.toggle(
+                            "active",
+                            index === currentIndex
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       코멘트
+    ========================= */
+
+    const caption =
+        document.createElement("p");
+
+    caption.className =
+        "caption";
+
+    caption.textContent =
+        post[1];
+
+
+    article.appendChild(
+        caption
+    );
+
+
+    return article;
+}
+
+
+/* =====================================================
+   렌더링
+===================================================== */
+
+const postsContainer =
+    document.getElementById("posts");
+
+
+function renderPosts(order) {
+
+    postsContainer.innerHTML =
+        "";
+
+
+    let orderedPosts;
+
+
+    if (
+        order === "newest"
+    ) {
+
+        orderedPosts =
+            [...postData].reverse();
+
+    } else {
+
+        orderedPosts =
+            [...postData];
+
+    }
+
+
+    orderedPosts.forEach(
+        item => {
+
+            postsContainer.appendChild(
+                createPost(item)
+            );
+
+        }
+    );
+
+
+    document
+        .getElementById("newestBtn")
+        .classList.toggle(
+            "active",
+            order === "newest"
+        );
+
+
+    document
+        .getElementById("oldestBtn")
+        .classList.toggle(
+            "active",
+            order === "oldest"
+        );
+
+}
+
+
+/* =====================================================
+   정렬
+===================================================== */
+
+function changeOrder(order) {
+
+    renderPosts(
+        order
+    );
+
+}
+
+
+/* =====================================================
+   처음에는 최신순
+===================================================== */
+
+renderPosts(
+    "newest"
+);
+
+</script>
+
+</body>
+</html>
